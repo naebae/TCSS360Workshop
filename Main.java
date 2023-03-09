@@ -1,5 +1,6 @@
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -43,15 +44,17 @@ public class Main {
                 loginRegisterForm.setVisible(true);
             }
         });
+        // Create an instance of ProjectManagementPanel
+        ProjectManagementPanel projectManagementPanel = new ProjectManagementPanel();
 
-        // Add the log out button to the panel
+        // Add the panel to the frame's content pane
+        frame.getContentPane().add(projectManagementPanel);
 
-        panel.add(logoutButton, BorderLayout.NORTH); // add button to buttonPanel at EAST position
-        panel.add(logoutButton, BorderLayout.EAST); // add buttonPanel to main JPanel at NORTH position
-        panel.add(logoutButton);
+        // Set the frame visible
+        frame.setVisible(true);
 
-
-
+        // Open the project management panel
+        projectManagementPanel.openProjectManagementPanel();
 
         JButton b1 = new JButton("About");
         b1.setBounds(50,100,80,30);
@@ -75,7 +78,6 @@ public class Main {
                 if(returnVal == JFileChooser.APPROVE_OPTION) {
                     File file = chooser.getSelectedFile();
                     // read file and store the settings/data
-                    // AAA
 
                     JOptionPane.showMessageDialog(null, "File imported successfully.");
                 }
@@ -106,6 +108,7 @@ public class Main {
                 }
             }
         });
+
         JButton b4 = new JButton("Reminders");
         b4.setBounds(320,100,100,30);
         b4.setBackground(Color.blue);
