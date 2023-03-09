@@ -10,13 +10,48 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
-        JFrame frame = new JFrame("Calculatorv01");
+
+        // Shows the login/register form
+        LoginRegisterForm loginRegisterForm = new LoginRegisterForm();
+        loginRegisterForm.setVisible(true);
+
+        // Wait for the user to close the form
+        while (loginRegisterForm.isVisible()) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        JFrame frame = new JFrame("Calculatorv02");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1000,1000);
 
         JPanel panel = new JPanel();
         panel.setBounds(40,80,200,200);
-        panel.setBackground(Color.lightGray);
+        panel.setBackground(Color.white);
+
+        JButton logoutButton = new JButton("Log out");
+        logoutButton.setPreferredSize(new Dimension(80, 30)); // set preferred size to make button smaller
+        logoutButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // Log out the current user
+
+                // Close the main GUI and show the login/register form again
+                frame.dispose();
+                loginRegisterForm.setVisible(true);
+            }
+        });
+
+        // Add the log out button to the panel
+
+        panel.add(logoutButton, BorderLayout.NORTH); // add button to buttonPanel at EAST position
+        panel.add(logoutButton, BorderLayout.EAST); // add buttonPanel to main JPanel at NORTH position
+        panel.add(logoutButton);
+
+
+
 
         JButton b1 = new JButton("About");
         b1.setBounds(50,100,80,30);
@@ -39,21 +74,14 @@ public class Main {
                 int returnVal = chooser.showOpenDialog(null);
                 if(returnVal == JFileChooser.APPROVE_OPTION) {
                     File file = chooser.getSelectedFile();
-                    try {
-                        String content = "";
-                        java.util.Scanner scanner = new java.util.Scanner(file);
-                        while (scanner.hasNextLine()) {
-                            String line = scanner.nextLine();
-                            content += line + "\n";
-                        }
-                        scanner.close();
-                        JOptionPane.showMessageDialog(null, content);
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
+                    // read file and store the settings/data
+                    // AAA
+
+                    JOptionPane.showMessageDialog(null, "File imported successfully.");
                 }
             }
         });
+
 
         JButton b3 = new JButton("Save");
         b3.setBounds(230,100,80,30);
@@ -118,12 +146,6 @@ public class Main {
             }
         });
 
-        panel.add(b1);
-        panel.add(b2);
-        panel.add(b3);
-        panel.add(b4);
-        frame.add(panel);
-        frame.setVisible(true);
 
         JButton b5 = new JButton("Organize");
         b5.setBounds(320,100,80,30);
@@ -157,5 +179,8 @@ public class Main {
         panel.add(b5);
         frame.add(panel);
         frame.setVisible(true);
+    }
+
+    public void setVisible(boolean b) {
     }
 }
