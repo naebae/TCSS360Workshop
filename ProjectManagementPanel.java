@@ -5,6 +5,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+
+/**
+ *  Created by: Matthew Burgess
+ */
 public class ProjectManagementPanel extends JPanel implements ActionListener {
     // Declare components
     private JButton newProjectButton, editProjectButton, budgetProjectButton, setReminderButton;

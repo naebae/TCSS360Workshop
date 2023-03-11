@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import javax.swing.*;
 
+
 public class About {
     private JFrame frame;
     private JLabel headerLabel;

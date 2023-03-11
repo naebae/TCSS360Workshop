@@ -7,6 +7,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
+/***
+ * Login/Register panel GUI
+ *
+ * Created by: Matthew Burgess
+ */
 public class LoginRegisterForm extends JFrame implements ActionListener {
 
     // Login components
@@ -90,6 +95,11 @@ public class LoginRegisterForm extends JFrame implements ActionListener {
         setVisible(true);
     }
 
+    /***
+     * Action listeners for initial login screen
+     *
+     * @param e Action events made by user
+     */
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == loginButton) {
             String username = usernameTextField.getText();
@@ -121,6 +131,12 @@ public class LoginRegisterForm extends JFrame implements ActionListener {
         }
     }
 
+    /**
+     *
+     * @param username username by user stored in file
+     * @param password password made by user stored in text file.
+     * @return username + password = correct -> go to main GUI
+     */
     private boolean checkCredentials(String username, String password) {
         try {
             File file = new File("users.txt");

@@ -9,7 +9,13 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+/***
+ * Main GUI controller panel
+ *
+ *  Created by Matthew Burgess
+ */
 public class Main {
+
     public static void main(String[] args) {
 
         // Shows the login/register form
