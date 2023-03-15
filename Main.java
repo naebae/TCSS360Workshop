@@ -1,13 +1,11 @@
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
 /***
  * Main GUI controller panel
@@ -15,6 +13,19 @@ import java.io.IOException;
  *  Created by Matthew Burgess
  */
 public class Main {
+
+    public static void saveProjects(ProjectManagementPanel projectManagementPanel, File file) throws IOException {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            // Replace Project class with String, and change the data accordingly
+            DefaultListModel<ProjectManagementPanel.Project> projectListModel = projectManagementPanel.getProjectListModel();
+            int size = projectListModel.getSize();
+            writer.write(size + "\n");
+            for (int i = 0; i < size; i++) {
+                ProjectManagementPanel.Project project = projectListModel.get(i);
+                writer.write(project + "\n");
+            }
+        }
+    }
 
     public static void main(String[] args) {
 
@@ -31,30 +42,33 @@ public class Main {
             }
         }
 
-        JFrame frame = new JFrame("Calculatorv02");
+        // Create the main frame
+        JFrame frame = new JFrame("Project Management");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(1000,1000);
+        frame.setSize(1000, 1000);
+
+        // Create an instance of ProjectManagementPanel
+        ProjectManagementPanel projectManagementPanel = new ProjectManagementPanel();
+        // Add the project management panel to the frame's content pane
+        frame.getContentPane().add(projectManagementPanel, BorderLayout.CENTER);
+
 
         JPanel panel = new JPanel();
         panel.setBounds(40,80,200,200);
         panel.setBackground(Color.white);
 
         JButton logoutButton = new JButton("Log out");
-        logoutButton.setPreferredSize(new Dimension(80, 30)); // set preferred size to make button smaller
-        logoutButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                // Log out the current user
+        logoutButton.addActionListener(e -> {
+            // Log out the current user
 
-                // Close the main GUI and show the login/register form again
-                frame.dispose();
-                loginRegisterForm.setVisible(true);
-            }
+            // Close the main GUI and show the login/register form again
+            frame.dispose();
+            loginRegisterForm.setVisible(true);
         });
         // Create an instance of ProjectManagementPanel
-        ProjectManagementPanel projectManagementPanel = new ProjectManagementPanel();
 
         // Add the panel to the frame's content pane
-        frame.getContentPane().add(projectManagementPanel);
+        frame.getContentPane().add(logoutButton, BorderLayout.NORTH);
 
         // Set the frame visible
         frame.setVisible(true);
@@ -104,9 +118,7 @@ public class Main {
                 if(returnVal == JFileChooser.APPROVE_OPTION) {
                     File file = chooser.getSelectedFile();
                     try {
-                        BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-                        writer.write("Hello, world!");
-                        writer.close();
+                        saveProjects(projectManagementPanel, file);
                         JOptionPane.showMessageDialog(null, "File saved successfully.");
                     } catch (IOException ex) {
                         ex.printStackTrace();

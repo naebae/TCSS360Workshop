@@ -1,9 +1,12 @@
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.Date;
+import javax.swing.JOptionPane;
 
 
 /**
@@ -16,6 +19,33 @@ public class ProjectManagementPanel extends JPanel implements ActionListener {
     private JTextArea projectDescriptionTextArea;
     private JList<Project> projectList;
     private DefaultListModel<Project> projectListModel;
+    DefaultListModel<Project> getProjectListModel() {
+        return projectListModel;
+    }
+
+    public void exportData(File file) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            for (int i = 0; i < projectListModel.size(); i++) {
+                Project project = projectListModel.get(i);
+                writer.write(project.toString());
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public void importData(File file) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            projectListModel.clear();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                Project project = Project.fromString(line);
+                projectListModel.addElement(project);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     // Constructor
     public ProjectManagementPanel() {
@@ -91,7 +121,7 @@ public class ProjectManagementPanel extends JPanel implements ActionListener {
                 return;
             }
             String projectDescription = projectDescriptionTextArea.getText();
-            Project project = new Project(projectName, projectBudget, projectDueDate, projectDescription);
+            Project project = new Project(projectName);
             projectListModel.addElement(project);
             projectNameTextField.setText("");
             projectBudgetTextField.setText("");
@@ -160,13 +190,13 @@ public class ProjectManagementPanel extends JPanel implements ActionListener {
     }
 
     // Project class (Still a work in progress and not overall functional)
-    private class Project {
+    static class Project {
         private String name;
         private double budget;
         private Date dueDate;
         private String description;
 
-        public Project(String name, double budget, Date dueDate, String description) {
+        public Project(String name) {
             this.name = name;
             this.budget = budget;
             this.dueDate = dueDate;
@@ -211,9 +241,31 @@ public class ProjectManagementPanel extends JPanel implements ActionListener {
             return budget;
         }
 
+
+        public static Project fromString(String projectData) {
+            // Assuming the projectData is in the format "name|budget|dueDate|description"
+            String[] parts = projectData.split("\\|");
+            String name = parts[0];
+            double budget = Double.parseDouble(parts[1]);
+            Date dueDate = null;
+            try {
+                dueDate = new SimpleDateFormat("MM/dd/yyyy").parse(parts[2]);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            String description = parts[3];
+
+            return new Project(name);
+        }
+
         @Override
         public String toString() {
-            return name;
+            SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+            return "Project Name: " + name +
+                    "\nProject Budget: " + budget +
+                    "\nProject Due Date: " + dateFormat.format(dueDate) +
+                    "\nProject Description: " + description;
         }
+
     }
 }

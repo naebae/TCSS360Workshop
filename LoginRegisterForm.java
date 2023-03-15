@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
+import javax.swing.JOptionPane;
 
 /***
  * Login/Register panel GUI
@@ -15,20 +16,29 @@ import java.util.Scanner;
 public class LoginRegisterForm extends JFrame implements ActionListener {
 
     // Login components
+    private JPanel loginPanel;
+
     private JLabel loginLabel;
     private JLabel usernameLabel;
     private JLabel passwordLabel;
-    private JTextField usernameTextField;
-    private JPasswordField passwordField;
-    private JButton loginButton;
+    protected JTextField usernameTextField;
+    protected JPasswordField passwordField;
+    protected JButton loginButton;
+    private JButton forgotUsernameButton;
+    private JButton forgotPasswordButton;
+    private JTextField forgotPasswordUsername;
+    private JButton enterUsername;
+    private JLabel returnPassword;
 
     // Register components
     private JLabel registerLabel;
     private JLabel newUsernameLabel;
     private JLabel newPasswordLabel;
-    private JTextField newUsernameTextField;
-    private JPasswordField newPasswordField;
-    private JButton registerButton;
+    protected JTextField newUsernameTextField;
+    protected JPasswordField newPasswordField;
+    protected JButton registerButton;
+    private JButton forgotUsernameOrPasswordButton;
+
 
 
     public LoginRegisterForm() {
@@ -46,6 +56,10 @@ public class LoginRegisterForm extends JFrame implements ActionListener {
         usernameTextField = new JTextField(20);
         passwordField = new JPasswordField(20);
         loginButton = new JButton("Login");
+        forgotUsernameButton = new JButton("Forgot Username");
+        forgotPasswordButton = new JButton("Forgot Password");
+        forgotPasswordUsername = new JTextField(20);
+        enterUsername = new JButton("Enter Username");
 
         // Initialize the register components
         registerLabel = new JLabel("Register");
@@ -54,30 +68,36 @@ public class LoginRegisterForm extends JFrame implements ActionListener {
         newUsernameTextField = new JTextField(20);
         newPasswordField = new JPasswordField(20);
         registerButton = new JButton("Register");
+        forgotUsernameOrPasswordButton = new JButton("Forgot Username or Password");
 
         // Set up the login panel
-        JPanel loginPanel = new JPanel();
-        loginPanel.setLayout(new GridLayout(3, 2));
+        loginPanel = new JPanel();
+        loginPanel.setLayout(new GridLayout(5, 2));
         loginPanel.add(loginLabel);
         loginPanel.add(new JLabel(""));
         loginPanel.add(usernameLabel);
         loginPanel.add(usernameTextField);
         loginPanel.add(passwordLabel);
         loginPanel.add(passwordField);
-        loginPanel.add(new JLabel(""));
         loginPanel.add(loginButton);
+        loginPanel.add(forgotUsernameButton);
+        loginPanel.add(forgotPasswordButton);
+        loginPanel.add(new JLabel(""));
+
+
+
 
         // Set up the register panel
         JPanel registerPanel = new JPanel();
-        registerPanel.setLayout(new GridLayout(3, 2));
+        registerPanel.setLayout(new GridLayout(4, 2));
         registerPanel.add(registerLabel);
         registerPanel.add(new JLabel(""));
         registerPanel.add(newUsernameLabel);
         registerPanel.add(newUsernameTextField);
         registerPanel.add(newPasswordLabel);
         registerPanel.add(newPasswordField);
-        registerPanel.add(new JLabel(""));
         registerPanel.add(registerButton);
+        registerPanel.add(forgotUsernameOrPasswordButton);
 
         // Set up the tabbed pane
         JTabbedPane tabbedPane = new JTabbedPane();
@@ -102,6 +122,7 @@ public class LoginRegisterForm extends JFrame implements ActionListener {
      */
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == loginButton) {
+
             String username = usernameTextField.getText();
             String password = new String(passwordField.getPassword());
             // Checks if the username and password are valid
@@ -116,6 +137,7 @@ public class LoginRegisterForm extends JFrame implements ActionListener {
                 JOptionPane.showMessageDialog(this, "Invalid username or password. Please try again.");
             }
         } else if (e.getSource() == registerButton) {
+
             String newUsername = newUsernameTextField.getText();
             String newPassword = new String(newPasswordField.getPassword());
             // Register the new user
@@ -129,6 +151,37 @@ public class LoginRegisterForm extends JFrame implements ActionListener {
                 ex.printStackTrace();
             }
         }
+        else if (e.getSource() == forgotPasswordButton){
+            loginPanel.add(forgotPasswordUsername);
+            loginPanel.add(enterUsername);
+            setVisible(true);
+
+        }
+        else if(e.getSource() == enterUsername){
+            String username = usernameTextField.getText();
+            String password = "";
+            try {
+                File file = new File("users.txt");
+                Scanner scanner = new Scanner(file);
+                while (scanner.hasNextLine()) {
+                    String line = scanner.nextLine();
+                    String[] tokens = line.split(",");
+                    // if user/password = same
+                    if (tokens.length == 2 && tokens[0].equals(username)) {
+                        password = tokens[1];
+                    }
+                }
+                scanner.close();
+
+            } catch (IOException ex) {
+                ex.printStackTrace();
+
+            }
+            returnPassword = new JLabel(password);
+            loginPanel.add(returnPassword);
+            setVisible(true);
+
+        }
     }
 
     /**
@@ -137,7 +190,7 @@ public class LoginRegisterForm extends JFrame implements ActionListener {
      * @param password password made by user stored in text file.
      * @return username + password = correct -> go to main GUI
      */
-    private boolean checkCredentials(String username, String password) {
+    protected boolean checkCredentials(String username, String password) {
         try {
             File file = new File("users.txt");
             Scanner scanner = new Scanner(file);
